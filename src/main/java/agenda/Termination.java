@@ -2,52 +2,45 @@ package agenda;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
 
 public class Termination {
 
+    //Définition des attributs
+    private LocalDate terminationDateInclusive;
+    private long numberOfOccurrences;
+
+    //Définition des deux constructeurs
+    public Termination(LocalDate dateInclusive) {
+        this.terminationDateInclusive = dateInclusive;
+        this.numberOfOccurrences = Long.MAX_VALUE; // Défini pour les dates
+    }
+
+    public Termination(long numberOfOccurrences) {
+        this.terminationDateInclusive = null;
+        this.numberOfOccurrences = numberOfOccurrences;
+    }
+
     public LocalDate terminationDateInclusive() {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        return terminationDateInclusive;
     }
 
     public long numberOfOccurrences() {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        return numberOfOccurrences;
     }
 
 
-    /**
-     * Constructs a fixed termination event ending at a given date
-     * @param start the start time of this event
-     * @param frequency one of :
-     * <UL>
-     * <LI>ChronoUnit.DAYS for daily repetitions</LI>
-     * <LI>ChronoUnit.WEEKS for weekly repetitions</LI>
-     * <LI>ChronoUnit.MONTHS for monthly repetitions</LI>
-     * </UL>
-     * @param terminationInclusive the date when this event ends
-     * @see ChronoUnit#between(Temporal, Temporal)
-     */
-    public Termination(LocalDate start, ChronoUnit frequency, LocalDate terminationInclusive) {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+    public LocalDate calculateTerminationDate(LocalDate start, ChronoUnit frequency) {
+    if (numberOfOccurrences != Long.MAX_VALUE) {
+        return start.plus((numberOfOccurrences - 1), frequency);
     }
-
-    /**
-     * Constructs a fixed termination event ending after a number of iterations
-     * @param start the start time of this event
-     * @param frequency one of :
-     * <UL>
-     * <LI>ChronoUnit.DAYS for daily repetitions</LI>
-     * <LI>ChronoUnit.WEEKS for weekly repetitions</LI>
-     * <LI>ChronoUnit.MONTHS for monthly repetitions</LI>
-     * </UL>
-     * @param numberOfOccurrences the number of occurrences of this repetitive event
-     */
-    public Termination(LocalDate start, ChronoUnit frequency, long numberOfOccurrences) {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
-    }
-
+    return terminationDateInclusive;
 }
+
+    public long calculateNumberOfOccurrences(LocalDate start, ChronoUnit frequency) {
+        if (terminationDateInclusive != null) {
+            return ChronoUnit.DAYS.between(start, terminationDateInclusive) / frequency.getDuration().toDays() + 1;
+        }
+        return numberOfOccurrences;
+    }
+
+}  

@@ -22,6 +22,12 @@ public class Event {
 
 
     /**
+     * The repetition frequency of the specified event
+     */
+    private Repetition eventRepetition;
+
+
+    /**
      * Constructs an event
      *
      * @param title the title of this event
@@ -32,36 +38,45 @@ public class Event {
         this.myTitle = title;
         this.myStart = start;
         this.myDuration = duration;
+        this.eventRepetition= null;
     }
 
     public void setRepetition(ChronoUnit frequency) {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        //Assign a specific frequency to an event
+        this.eventRepetition= new Repetition(frequency);
+
     }
 
-    public void addException(LocalDate date) {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+    public void addException(LocalDate day) {
+        if (eventRepetition != null) {
+            eventRepetition.addException(day);
+        }
     }
 
-    public void setTermination(LocalDate terminationInclusive) {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+    public void setTermination(LocalDate dateInclusive) {
+        if (eventRepetition != null) {
+            eventRepetition.setTermination(new Termination(dateInclusive));
+        }
     }
 
     public void setTermination(long numberOfOccurrences) {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        if (eventRepetition != null) {
+            eventRepetition.setTermination(new Termination(numberOfOccurrences));
+        }
     }
 
     public int getNumberOfOccurrences() {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        if (eventRepetition != null && eventRepetition.getTermination() != null) {
+            return (int) eventRepetition.getTermination().calculateNumberOfOccurrences(myStart.toLocalDate(), eventRepetition.getFrequency());
+        }
+        return 1;
     }
 
     public LocalDate getTerminationDate() {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        if (eventRepetition != null && eventRepetition.getTermination() != null) {
+            return eventRepetition.getTermination().calculateTerminationDate(myStart.toLocalDate(), eventRepetition.getFrequency());
+        }
+        return myStart.toLocalDate();
     }
 
     /**
@@ -70,11 +85,24 @@ public class Event {
      * @param aDay the day to test
      * @return true if the event occurs on that day, false otherwise
      */
-    public boolean isInDay(LocalDate aDay) {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+    public boolean isInDay(LocalDate day) {
+        LocalDate startDate = myStart.toLocalDate();
+        LocalDate endDate = myStart.plus(myDuration).toLocalDate();
+        
+        // Vérification pour un événement simple
+        if (!startDate.isAfter(day) && !endDate.isBefore(day)) {
+            return true;
+        }
+        
+        // Vérification pour les répétitions
+        if (eventRepetition != null) {
+            return eventRepetition.isInDay(this, day);
+        }
+        
+        return false;
     }
-   
+
+
     /**
      * @return the myTitle
      */
@@ -89,7 +117,6 @@ public class Event {
         return myStart;
     }
 
-
     /**
      * @return the myDuration
      */
@@ -97,8 +124,17 @@ public class Event {
         return myDuration;
     }
 
+    /**
+     * 
+     * @return the repetition frequency
+     */
+    public Repetition getRepetition(){
+        return this.eventRepetition;
+    }
+
     @Override
     public String toString() {
         return "Event{title='%s', start=%s, duration=%s}".formatted(myTitle, myStart, myDuration);
     }
 }
+   

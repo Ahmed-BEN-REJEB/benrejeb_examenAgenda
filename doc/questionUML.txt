@@ -1,2 +1,21 @@
-Ecrire ici votre réponse à la question UML.
+Comparaison des deux modèles :
 
+1. Premier modèle UML (avec "Repetition" et "Termination")
+    Ce premier modèle utilise des associations entre les classes Event, Repetition, et Termination.
+    Le concept de répétition est un composant distinct (Repetition) associé à un événement, tout comme la terminaison (Termination).
+Ses avantages :
+    Modularité : La séparation des responsabilités dans des classes spécifiques (répétition, terminaison), ce qui permet une meilleure réutilisation des concepts.
+    Flexibilité : La logique de répétition et de terminaison peut être modifiée ou étendue sans impacter directement la classe principale Event.
+Inconvénients :
+    Complexité : L'introduction de classes distinctes pour la répétition et la terminaison complexifie légèrement l'interaction entre les entités.
+    Liaison : La gestion des relations entre Repetition et Termination nécessite plus de vérifications pour s'assurer de la cohérence.
+
+2. Nouveau modèle UML (avec héritage : "RepetitiveEvent" et "FixedTerminationEvent")
+    Ce nouveau modèle adopte une approche basée sur l'héritage. RepetitiveEvent et FixedTerminationEvent sont des sous-classes de Event.
+    Intègre directement les attributs de répétition et de terminaison dans les sous-classes.
+Avantages :
+    Simplicité : En effet, l'héritage rend le modèle plus lisible en introduisant des spécialisations explicites.
+    Clarté des responsabilités : Les sous-classes encapsulent des comportements spécifiques (événements répétitifs ou avec terminaison fixe).
+Inconvénients :
+    Redondance : Certaines logiques de gestion des exceptions ou des dates peuvent devoir être dupliquées entre les sous-classes.
+    Évolutivité limitée : Si de nouveaux types d'événements apparaissent (par exemple, des événements avec plusieurs fréquences), le modèle nécessiterait potentiellement une refonte.
